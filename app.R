@@ -62,7 +62,11 @@ ui <- fluidPage(theme = shinytheme("flatly"),
             checkboxGroupInput("size", "Include Sizes:", 
                                choices = c("FING", "1+YR", "2+YR", "3+YR"),
                                selected = c("1+YR", "2+YR", "3+YR")),
-            actionButton("go", "Generate Map")
+            actionButton("go", "Generate Map"),
+            br(),
+            br(),
+            p("This app reads the annual stocking report summaries from the NH Fish and Game website and generates visualizations using open-source packages in the R programming language."),
+            a(href = "https://github.com/arkraieski/nhtroutmapr", "Check out the source code on Github")
         ),
 
         
