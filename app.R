@@ -89,11 +89,12 @@ ui <- fluidPage(theme = shinytheme("flatly"),
     )
 )
 
-# Define server logic required to draw a histogram
+# Define server logic
 server <- function(session, input, output) {
 
     # since year select inputs are necessary on multiple tabs
-    #connect the two year inputs with a 
+    # connect the two year inputs with a reactive value 
+    # that updates whenever either year input changes
     selected <- reactiveValues(year = 2019)
     observeEvent(input$year, selected$year <- (input$year))
     observeEvent(input$year2, selected$year <- (input$year2))
@@ -250,7 +251,10 @@ server <- function(session, input, output) {
             addProviderTiles(provider = "OpenTopoMap") %>%
             addPolygons(layerId = nh_trout()$Town, fillColor =  ~ pal(nh_trout()$Total), weight = 2, color = "black", fillOpacity = 0.6,
                         popup = popupTable(nh_trout(), zcol = c("Town", "Total"), feature.id = FALSE, row.numbers = FALSE)) %>%
-            addLegend(pal = pal, values = nh_trout()$Total)
+            addLegend(pal = pal, 
+                      values = nh_trout()$Total, 
+                      opacity = 0.6,
+                      na.label = "unstocked")
     })
     
     output$table <- DT::renderDataTable({
@@ -284,6 +288,7 @@ server <- function(session, input, output) {
     })
     #observeEvent(input$map_shape_click, {print(input$map_shape_click)})
     #observeEvent(input$go, print(input$go))
+    #observeEvent(input$go, print(IQR(nh_trout()$Total, na.rm = TRUE)))
     }
 
 # Run the application 
