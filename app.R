@@ -51,8 +51,8 @@ ui <- fluidPage(theme = shinytheme("flatly"),
         sidebarPanel(
             selectInput("year",
                         "Year",
-                        choices = c(2018, 2019),
-                        selected = 2019),
+                        choices = c(2018, 2019, 2020),
+                        selected = 2020),
             checkboxGroupInput("species", "Include Species:", 
                                choices = c("Eastern Brook Trout" = "EBT",
                                            "Brown Trout" = "BT",
@@ -110,10 +110,15 @@ server <- function(session, input, output) {
     # and the year mapped when the user goes back to the first tab 
     observeEvent(input$year2, click("go"))
     
+    report_url <- reactive({ifelse(input$year == 2020, 
+                         "https://www.wildlife.state.nh.us/fishing/documents/trout-stocking-summary-2020.pdf",
+                         paste0("https://www.wildlife.state.nh.us/fishing/documents/stocking-full-",
+                                input$year,
+                                ".pdf"))
+    })
+    
     sr_parsed <- reactive({
-        stocking_text <- (pdf_text(paste0("https://www.wildlife.state.nh.us/fishing/documents/stocking-full-",
-                                          input$year,
-                                          ".pdf")) %>%
+        stocking_text <- (pdf_text(report_url()) %>%
                               readr::read_lines())[-c(1,2)] # first 2 rows are just the title
         
         if(selected$year == 2018){
